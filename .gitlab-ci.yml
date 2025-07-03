@@ -12,7 +12,7 @@ build_website:
     paths:
       - build
 
-linter:
+.linter:
   image: node:22-alpine3.21
   stage: .pre
   script:
@@ -25,8 +25,9 @@ check_index:
   stage: test
   script:
     - test -f build/index.html
+    - serve -s build
 
-run_tests:
+.run_tests:
   image: node:22-alpine3.21
   stage: .pre
   script:
