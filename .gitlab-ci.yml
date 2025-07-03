@@ -1,5 +1,5 @@
 build_website:
-  image: node:22
+  image: node:22-alpine3.21
   script: 
     - yarn install 
     - yarn build
