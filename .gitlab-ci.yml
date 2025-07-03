@@ -12,7 +12,7 @@ build_website:
     paths:
       - build
 
-.linter:
+linter:
   image: node:22-alpine3.21
   stage: .pre
   script:
@@ -24,10 +24,13 @@ check_index:
   image: node:22-alpine3.21
   stage: test
   script:
-    - yarn global add serve
-    - serve -s build
+    - yarn global add serve 
+    - apk add curl
+    - serve -s build &
+    - sleep 10
+    - curl http://localhost:3000 | grep "React App"
 
-.run_tests:
+run_tests:
   image: node:22-alpine3.21
   stage: .pre
   script:
