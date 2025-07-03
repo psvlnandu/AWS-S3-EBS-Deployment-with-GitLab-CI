@@ -1,0 +1,5 @@
+build_webiste:
+  image: alpine
+  script: 
+    - yarn install 
+    - yarn build
