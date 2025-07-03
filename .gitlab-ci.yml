@@ -21,10 +21,14 @@ linter:
 
 
 check_index:
-  image: alpine
-  stage: test
+  image: node:22-alpine3.21
+  stage: .pre
   script:
-    - test -f build/index.html
+    - yarn global add serve 
+    - apk add curl
+    - serve -s build &
+    - sleep 10
+    - curl http://localhost:3000 | grep "React App"
 
 run_tests:
   image: node:22-alpine3.21
