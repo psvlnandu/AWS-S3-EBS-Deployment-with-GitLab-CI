@@ -1,5 +1,5 @@
-build_webiste:
-  image: alpine
+build_website:
+  image: node:22
   script: 
     - yarn install 
     - yarn build
