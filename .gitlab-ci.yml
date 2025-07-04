@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - deploy
+  - post deploy
 variables:
   APP_BASE_URL: http://poorna-03072025.s3-website.us-east-2.amazonaws.com
 build_website:
