@@ -2,12 +2,7 @@ stages:
   - build
   - test
   - deploy staging
-  - deploy
-  - post deploy
-
-variables:
-  APP_BASE_URL: http://poorna-03072025.s3-website.us-east-2.amazonaws.com
-  APP_BASE_URL_STAGING: http://poorna-03072025-staging.s3-website.us-east-2.amazonaws.com
+  - deploy production
 
 build_website:
   image: node:22-alpine3.21
@@ -21,6 +16,7 @@ build_website:
     paths:
       - build
 
+# Testing the website on GitLab to check if its working?
 check_index:
   image: node:22-alpine3.21
   stage: test
@@ -31,10 +27,9 @@ check_index:
     - sleep 10
     - curl http://localhost:3000 | grep "React App"
 
-
-deploy_to_stagging:
-  stage: deploy staging
-  environment: Staging
+# Reusing the configuration.
+# We call this function using extend keyword in jobs.
+.deploy:
   image: 
     name: amazon/aws-cli:2.27.48
     entrypoint: [""]
@@ -46,26 +41,14 @@ deploy_to_stagging:
     - aws s3 sync build s3://$AWS_S3_BUCKET --delete
     - curl $CI_ENVIRONMENT_URL | grep "React App" 
 
-production_tests:
-  stage: post deploy
-  image: curlimages/curl:8.14.1
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - curl $APP_BASE_URL| grep "React App" 
 
+deploy_to_stagging:
+  stage: deploy staging
+  environment: Staging
+  extends: .deploy
 
 
 deploy_to_production:
-  stage: deploy
+  stage: deploy production
   environment: Production
-  image: 
-    name: amazon/aws-cli:2.27.48
-    entrypoint: [""]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - aws --version
-    - echo $CI_COMIT_REF_NAME
-    - aws s3 sync build s3://$AWS_S3_BUCKET --delete
-    - curl $CI_ENVIRONMENT_URL| grep "React App" 
+  extends: .deploy
