@@ -4,6 +4,8 @@ stages:
   - deploy staging
   - deploy production
 
+variables:
+  APP_VERSION: $CI_PIPELINE_IID
 build_website:
   image: node:22-alpine3.21
   stage: build
@@ -12,6 +14,9 @@ build_website:
     - yarn lint
     - yarn test
     - yarn build
+    - echo $APP_VERSION > build/version.html
+  # artifacts saves the build directory. 
+  # These saved ae passed to subsequent jobs in later stages
   artifacts:
     paths:
       - build
@@ -40,6 +45,8 @@ check_index:
     - echo $CI_COMIT_REF_NAME
     - aws s3 sync build s3://$AWS_S3_BUCKET --delete
     - curl $CI_ENVIRONMENT_URL | grep "React App" 
+    - curl $CI_ENVIRONMENT_URL/version.html | grep $APP_VERSION 
+    
 
 
 deploy_to_stagging:
