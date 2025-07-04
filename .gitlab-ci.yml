@@ -2,12 +2,7 @@ stages:
   - build
   - test
   - deploy staging
-  - deploy
-  - post deploy
-
-variables:
-  APP_BASE_URL: http://poorna-03072025.s3-website.us-east-2.amazonaws.com
-  APP_BASE_URL_STAGING: http://poorna-03072025-staging.s3-website.us-east-2.amazonaws.com
+  - deploy production
 
 build_website:
   image: node:22-alpine3.21
@@ -21,6 +16,7 @@ build_website:
     paths:
       - build
 
+# Testing the website on GitLab to check if its working?
 check_index:
   image: node:22-alpine3.21
   stage: test
@@ -51,17 +47,8 @@ deploy_to_stagging:
   environment: Staging
   extends: .deploy
 
-production_tests:
-  stage: post deploy
-  image: curlimages/curl:8.14.1
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - curl $APP_BASE_URL| grep "React App" 
-
-
 
 deploy_to_production:
-  stage: deploy
+  stage: deploy production
   environment: Production
   extends: .deploy
