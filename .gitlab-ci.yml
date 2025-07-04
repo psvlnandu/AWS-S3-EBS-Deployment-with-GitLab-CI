@@ -2,7 +2,6 @@ stages:
   - build
   - test
   - deploy staging
-  - test staging
   - deploy
   - post deploy
 
@@ -35,28 +34,7 @@ check_index:
 
 deploy_to_stagging:
   stage: deploy staging
-  image: 
-    name: amazon/aws-cli:2.27.48
-    entrypoint: [""]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - aws --version
-    - echo $CI_COMIT_REF_NAME
-    - aws s3 sync build s3://$AWS_S3_BUCKET_STAGING --delete
-
-staging_tests:
-  stage: test staging
-  image: curlimages/curl:8.14.1
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - curl $APP_BASE_URL_STAGING| grep "React App" 
-
-
-
-deploy_to_production:
-  stage: deploy
+  environment: Staging
   image: 
     name: amazon/aws-cli:2.27.48
     entrypoint: [""]
@@ -66,6 +44,7 @@ deploy_to_production:
     - aws --version
     - echo $CI_COMIT_REF_NAME
     - aws s3 sync build s3://$AWS_S3_BUCKET --delete
+    - curl $CI_ENVIRONMENT_URL | grep "React App" 
 
 production_tests:
   stage: post deploy
@@ -77,3 +56,16 @@ production_tests:
 
 
 
+deploy_to_production:
+  stage: deploy
+  environment: Production
+  image: 
+    name: amazon/aws-cli:2.27.48
+    entrypoint: [""]
+  rules:
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  script:
+    - aws --version
+    - echo $CI_COMIT_REF_NAME
+    - aws s3 sync build s3://$AWS_S3_BUCKET --delete
+    - curl $CI_ENVIRONMENT_URL| grep "React App" 
