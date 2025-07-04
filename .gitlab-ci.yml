@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-.build_website:
+build_website:
   image: node:22-alpine3.21
   stage: build
   script: 
@@ -15,7 +15,7 @@ stages:
     paths:
       - build
 
-.check_index:
+check_index:
   image: node:22-alpine3.21
   stage: test
   script:
