@@ -4,7 +4,7 @@ stages:
   - deploy staging
   - test staging
   - deploy
-  - post deploy
+  - post_deploy
 
 variables:
   APP_BASE_URL: http://poorna-03072025.s3-website.us-east-2.amazonaws.com
@@ -68,7 +68,7 @@ deploy_to_production:
     - aws s3 sync build s3://$AWS_S3_BUCKET --delete
 
 production_tests:
-  stage: post deploy
+  stage: post_deploy
   image: curlimages/curl:8.14.1
   rules:
     - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
