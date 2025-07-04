@@ -7,18 +7,12 @@ build_website:
   stage: build
   script: 
     - yarn install 
+    - yarn lint
+    - yarn test
     - yarn build
   artifacts:
     paths:
       - build
-
-linter:
-  image: node:22-alpine3.21
-  stage: test
-  script:
-    - yarn install
-    - yarn lint
-
 
 check_index:
   image: node:22-alpine3.21
@@ -30,9 +24,3 @@ check_index:
     - sleep 10
     - curl http://localhost:3000 | grep "React App"
 
-run_tests:
-  image: node:22-alpine3.21
-  stage: .pre
-  script:
-    - yarn install
-    - yarn test
