@@ -3,7 +3,7 @@ stages:
   - test
   - deploy
 
-build_website:
+.build_website:
   image: node:22-alpine3.21
   stage: build
   script: 
@@ -15,7 +15,7 @@ build_website:
     paths:
       - build
 
-check_index:
+.check_index:
   image: node:22-alpine3.21
   stage: test
   script:
@@ -32,5 +32,7 @@ deploy_to_s3:
     entrypoint: [""]
   script:
     - aws --version
+    - echo "Hello Poorna Raavi" > test.txt
+    - aws s3 cp test.txt s3://$AWS_S3_BUCKET/test.txt
 
 
