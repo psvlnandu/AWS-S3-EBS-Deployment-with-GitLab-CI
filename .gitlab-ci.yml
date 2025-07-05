@@ -47,8 +47,8 @@ build_website:
     curl http://website/version.html | grep $APP_VERSION
 
 deploy to production:
-  image:
-    name: amazon/aws-cli.2.4.11
+  image: 
+    name: amazon/aws-cli:2.27.48
     entrypoint: [""]
   stage: deploy
   environment: Production
