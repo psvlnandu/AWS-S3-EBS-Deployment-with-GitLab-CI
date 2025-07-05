@@ -22,7 +22,7 @@ build_website:
     paths:
       - build
 
-.build docker image:
+build docker image:
   stage: package
   image: docker:20.10.12 #Tells GitLab to run your job inside a docker container:20.10.12
   services:
@@ -37,7 +37,7 @@ build_website:
     - docker image ls #lists all the docker images available
     - docker push --all-tags $CI_REGISTRY_IMAGE # --all-tags Pushing the Image to GitLab Private Registry.
 
-.test docker image:
+test docker image:
   stage: test
   image: curlimages/curl 
   services:
@@ -52,6 +52,9 @@ deploy to production:
     entrypoint: [""]
   stage: deploy
   environment: Production
+  variables:
+    APP_NAME : Basic Website
+    APP_ENV_NAME : BasicWebsite-env
   script:
     - aws --version
     - yum install -y gettext
@@ -62,3 +65,5 @@ deploy to production:
     - cat auth.json
     - aws s3 cp Dockerrun.aws.json s3://$AWS_S3_BUCKET/Dockerrun.aws.json
     - aws s3 cp auth.json s3://$AWS_S3_BUCKET/auth.json
+    - aws elasticbeanstalk create-application-version --application-name "$APP_NAME" --version-label $APP_VERSION --source-bundle S3Bucket=$AWS_S3_BUCKET,S3Key=Dockerrun.aws.json
+    - aws elasticbeanstalk update-environment --aplication-name "$APP_NAME" --version-label $APP_VERSION --environment-name $APP_ENV_NAME
