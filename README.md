@@ -19,7 +19,7 @@ GitLab CI: Became proficient in writing .gitlab-ci.yml files, defining stages, j
 
 AWS S3: Acquired skills in configuring S3 buckets for static website hosting, setting public access policies, and managing object permissions.
 
-AWS Elastic Beanstalk: (Optional - add if you used it for this project) Deployed applications using a managed AWS service, understanding environment configuration and application versioning.
+AWS Elastic Beanstalk:  Deployed applications using a managed AWS service, understanding environment configuration and application versioning.
 
 
 - **Check the** [**course notes**](docs/course-notes.md)
