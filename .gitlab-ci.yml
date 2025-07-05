@@ -27,7 +27,9 @@ build docker image:
     #Starts up a separate service container that runs the actual Docker engine(daemon). 
     #This allows the main job container to connect to it & build images
   script:
+    - echo $CI_REGISTRY_PASSWORD | docker login -u $CI_REGISTRY_USER $CI_REGISTRY --pasword-stdin #Enter your password via standard input.
   # this docker client is able to talk to docker deamon.
   # This looks for Dockerfile in project & builds a docker image
     - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$APP_VERSION .
     - docker image ls #lists all the docker images available
+    - docker push --all-tags $CI_REGISTRY_IMAGE #Pushing the Image to GitLab Private Registry.
