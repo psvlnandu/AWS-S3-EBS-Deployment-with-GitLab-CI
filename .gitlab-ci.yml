@@ -6,6 +6,7 @@ stages:
 
 variables:
   APP_VERSION: $CI_PIPELINE_IID
+  
 build_website:
   image: node:22-alpine3.21
   stage: build
