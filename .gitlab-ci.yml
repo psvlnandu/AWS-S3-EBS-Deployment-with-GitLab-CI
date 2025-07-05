@@ -1,8 +1,6 @@
 stages:
   - build
-  - test
-  - deploy staging
-  - deploy production
+  - package
 
 variables:
   APP_VERSION: $CI_PIPELINE_IID
@@ -21,42 +19,15 @@ build_website:
     paths:
       - build
 
-# Testing the website on GitLab to check if its working?
-check_index:
-  image: node:22-alpine3.21
-  stage: test
+build docker image:
+  stage: package
+  image: docker:20.10.12 #Tells GitLab to run your job inside a docker container:20.10.12
+  services:
+    - docker:20.10.12-dind 
+    #Starts up a separate service container that runs the actual Docker engine(daemon). 
+    #This allows the main job container to connect to it & build images
   script:
-    - yarn global add serve 
-    - apk add curl
-    - serve -s build &
-    - sleep 10
-    - curl http://localhost:3000 | grep "React App"
-
-# Reusing the configuration.
-# We call this function using extend keyword in jobs.
-.deploy:
-  image: 
-    name: amazon/aws-cli:2.27.48
-    entrypoint: [""]
-  rules:
-    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
-  script:
-    - aws --version
-    - echo $CI_COMIT_REF_NAME
-    - aws s3 sync build s3://$AWS_S3_BUCKET --delete
-    - curl $CI_ENVIRONMENT_URL | grep "React App" 
-    - curl $CI_ENVIRONMENT_URL/version.html | grep $APP_VERSION 
-    
-
-
-deploy_to_stagging:
-  stage: deploy staging
-  environment: Staging
-  extends: .deploy
-
-
-deploy_to_production:
-  stage: deploy production
-  when: manual
-  environment: Production
-  extends: .deploy
+  # this docker client is able to talk to docker deamon.
+  # This looks for Dockerfile in project & builds a docker image
+    - docker build -t $CI_REGISTRY_IMAGE -t $CI_REGISTRY_IMAGE:$APP_VERSION.
+    - docker image ls #lists all the docker images available
