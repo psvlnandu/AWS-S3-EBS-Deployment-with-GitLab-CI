@@ -55,7 +55,7 @@ deploy to production:
   script:
     - aws --version
     - yum install -y gettext
-    - export DEPLOY_TOKEN=$(echo $GITLAB_DEPLOY_TOKEN | td -d "\n" | base64) #AWS expects base 64
+    - export DEPLOY_TOKEN=$(echo $GITLAB_DEPLOY_TOKEN | tr -d "\n" | base64) #AWS expects base 64
     - envsubst < templates/Dockerrun.aws.json > Dockerrun.aws.json
     - envsubst < templates/auth.json > auth.json
     - cat Dockerrun.aws.json
